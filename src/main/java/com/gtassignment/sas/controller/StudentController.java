@@ -18,7 +18,6 @@ public class StudentController {
 
     @PostMapping(value = "/students")
     public ResponseEntity<Void> saveStudent(@RequestBody StudentParam studentParam) {
-        System.err.println("i am inside save students");
         Long studentId = studentService.saveStudent(studentParam);
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(studentId).toUri();
         return ResponseEntity.created(location).build();
