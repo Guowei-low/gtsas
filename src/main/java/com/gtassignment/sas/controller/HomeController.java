@@ -13,9 +13,6 @@ import java.util.List;
 @RestController
 public class HomeController {
 
-    @Autowired
-    StudentService studentService;
-
     @GetMapping(value = "/home")
     public String GetTest()
     {
@@ -23,8 +20,8 @@ public class HomeController {
     }
 
     @GetMapping(value = "/testing")
-    public ResponseEntity<List<Student>> BookList(String genre) {
-        var students = studentService.getAllStudent();
-        return ResponseEntity.ok(students);
+    public ResponseEntity<String> BookList(String genre) {
+//        var students = studentService.getAllStudent();
+        return ResponseEntity.ok("abc");
     }
 }

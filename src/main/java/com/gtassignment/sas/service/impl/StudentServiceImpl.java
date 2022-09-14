@@ -1,13 +1,15 @@
 package com.gtassignment.sas.service.impl;
 
 import com.gtassignment.sas.dto.StudentParam;
+import com.gtassignment.sas.dto.SuspendStudentParam;
 import com.gtassignment.sas.model.Student;
 import com.gtassignment.sas.repository.StudentRepository;
 import com.gtassignment.sas.service.StudentService;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -24,5 +26,33 @@ public class StudentServiceImpl extends BaseService implements StudentService {
     public Long saveStudent(StudentParam studentParam) {
         Student student = modelMapper.map(studentParam, Student.class);
         return studentRepository.save(student).getId();
+    }
+
+    @Override
+    public Long countStudentFromEmailList(List<String> studentEmailList) {
+        return studentRepository.getExistingRecordCountFromEmails(studentEmailList);
+    }
+
+    @Override
+    public List<Student> getStudentByEmails(List<String> emails) {
+        return studentRepository.findStudentByEmails(emails);
+    }
+
+    @Override
+    public List<Student> getCommonStudentByTeacherEmailList(List<String> teacherEmailList) {
+            return studentRepository
+                    .findCommonStudentsByTeacherEmails(teacherEmailList, Long.valueOf(teacherEmailList.size()));
+    }
+
+    @Override
+    public Boolean suspend(SuspendStudentParam suspendStudentParam) {
+        Student student = studentRepository.findByEmail(suspendStudentParam.getStudent());
+        student.setSuspend(true);
+        try {
+            studentRepository.save(student);
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
     }
 }
