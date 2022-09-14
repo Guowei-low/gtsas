@@ -2,20 +2,26 @@ package com.gtassignment.sas.controller;
 
 import com.gtassignment.sas.dto.RegisterStudentParam;
 import com.gtassignment.sas.dto.TeacherParam;
-import com.gtassignment.sas.service.impl.TeacherServiceImpl;
+import com.gtassignment.sas.exeption.ErrorResponse;
+import com.gtassignment.sas.model.Teacher;
+import com.gtassignment.sas.service.StudentService;
+import com.gtassignment.sas.service.TeacherService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.Collections;
+import java.util.List;
 
-@Controller
-public class TeacherController {
+@RestController
+public class TeacherController extends BaseController{
     @Autowired
-    TeacherServiceImpl teacherService;
+    TeacherService teacherService;
+    @Autowired
+    StudentService studentService;
 
     @PostMapping(value = "/teachers")
     public ResponseEntity<Void> saveTeacher(@RequestBody TeacherParam teacherParam) {
@@ -25,8 +31,45 @@ public class TeacherController {
     }
 
     @PostMapping(value = "/register")
-    public ResponseEntity<RegisterStudentParam> registerStudents(@RequestBody RegisterStudentParam registerStudentParam) {
+    public ResponseEntity<Object> registerStudents(@RequestBody RegisterStudentParam registerStudentParam)
+            throws ErrorResponse {
+        Teacher teacher = teacherService.getTeacher(registerStudentParam.getTeacherEmail());
+        if (teacher == null) {
+            //return Error code
+            throw new ErrorResponse("Not Teacher Found", HttpStatus.BAD_REQUEST);
+        }
+        //empty email
+        if (registerStudentParam.getStudentEmailList().isEmpty()) {
+            throw new ErrorResponse("Empty student email list", HttpStatus.BAD_REQUEST);
+        }
+        //some student wasn't registered
+        Long countExistingStudent = studentService
+                .countStudentFromEmailList(registerStudentParam.getStudentEmailList());
+        if (registerStudentParam.getStudentEmailList().size() != countExistingStudent) {
+            throw new ErrorResponse("Some student's email was not registered", HttpStatus.BAD_REQUEST);
+        }
+        var result = teacherService.registerStudent(registerStudentParam);
 
-        return ResponseEntity.ok(registerStudentParam);
+        if(!result) {
+            throw new ErrorResponse("Unknown Error", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    @GetMapping(value = "/commonstudents")
+    public ResponseEntity<Object> findCommonStudent(@RequestParam(name = "teacher") List<String> teacherEmailList)
+            throws ErrorResponse {
+        if (teacherEmailList.isEmpty()) {
+            throw new ErrorResponse("No teacher email provided", HttpStatus.BAD_REQUEST);
+        }
+
+        if (teacherService.countTeacherFromEmailList(teacherEmailList) != teacherEmailList.size()) {
+            throw new ErrorResponse("Some teacher's email wasn't registered", HttpStatus.BAD_REQUEST);
+        }
+
+        List<String> students = studentService.getCommonStudentByTeacherEmailList(teacherEmailList).stream()
+                .map(student -> student.getEmail()).toList();
+
+        return ResponseEntity.ok().body(Collections.singletonMap("students", students));
     }
 }

@@ -1,23 +1,21 @@
 package com.gtassignment.sas.service.impl;
 
 import com.gtassignment.sas.dto.StudentParam;
+import com.gtassignment.sas.dto.SuspendStudentParam;
 import com.gtassignment.sas.model.Student;
 import com.gtassignment.sas.repository.StudentRepository;
 import com.gtassignment.sas.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.modelmapper.TypeToken;
-import java.lang.reflect.Type;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
-public class StudentServiceImpl implements StudentService {
+public class StudentServiceImpl extends BaseService implements StudentService {
     @Autowired
     private StudentRepository studentRepository;
-
-    @Autowired
-    private ModelMapper modelMapper;
 
     @Override
     public List<Student> getAllStudent() {
@@ -31,10 +29,30 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public Long countStudentFromEmailList(List<StudentParam> studentParamList) {
-        Type listType = new TypeToken<List<Student>>(){}.getType();
-        List<Student> students = modelMapper.map(studentParamList, listType);
-        List<String> emails = (List<String>) students.stream().map(student -> student.getEmail());
-        return studentRepository.getExistingRecordCountFromEmails(emails);
+    public Long countStudentFromEmailList(List<String> studentEmailList) {
+        return studentRepository.getExistingRecordCountFromEmails(studentEmailList);
+    }
+
+    @Override
+    public List<Student> getStudentByEmails(List<String> emails) {
+        return studentRepository.findStudentByEmails(emails);
+    }
+
+    @Override
+    public List<Student> getCommonStudentByTeacherEmailList(List<String> teacherEmailList) {
+            return studentRepository
+                    .findCommonStudentsByTeacherEmails(teacherEmailList, Long.valueOf(teacherEmailList.size()));
+    }
+
+    @Override
+    public Boolean suspend(SuspendStudentParam suspendStudentParam) {
+        Student student = studentRepository.findByEmail(suspendStudentParam.getStudent());
+        student.setSuspend(true);
+        try {
+            studentRepository.save(student);
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
     }
 }

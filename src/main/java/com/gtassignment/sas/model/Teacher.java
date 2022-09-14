@@ -1,5 +1,6 @@
 package com.gtassignment.sas.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -20,16 +21,17 @@ public class Teacher {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "email", nullable = false)
+    @Column(name = "email", unique = true, nullable = false)
     private String email;
 
     @Column(name = "name", nullable = false)
     private String name;
 
     @ManyToMany
+    @JsonIgnore
     @JoinTable(
             name = "teacher_student",
-            joinColumns = @JoinColumn(name = "teacher_email"),
-            inverseJoinColumns = @JoinColumn(name = "student_email"))
+            joinColumns = @JoinColumn(name = "teacher_id"),
+            inverseJoinColumns = @JoinColumn(name = "student_id"))
     private Set<Student> students = new HashSet<>();
 }
