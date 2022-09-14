@@ -1,5 +1,6 @@
 package com.gtassignment.sas.controller;
 
+import com.gtassignment.sas.dto.RegisterStudentParam;
 import com.gtassignment.sas.dto.TeacherParam;
 import com.gtassignment.sas.service.impl.TeacherServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,5 +22,11 @@ public class TeacherController {
         Long teacherId = teacherService.saveTeacher(teacherParam);
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(teacherId).toUri();
         return ResponseEntity.created(location).build();
+    }
+
+    @PostMapping(value = "/register")
+    public ResponseEntity<RegisterStudentParam> registerStudents(@RequestBody RegisterStudentParam registerStudentParam) {
+
+        return ResponseEntity.ok(registerStudentParam);
     }
 }

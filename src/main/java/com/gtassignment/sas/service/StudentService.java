@@ -8,4 +8,6 @@ import java.util.List;
 public interface StudentService {
     List<Student> getAllStudent();
     Long saveStudent(StudentParam studentParam);
+
+    Long countStudentFromEmailList(List<StudentParam> studentParamList);
 }
