@@ -46,9 +46,9 @@ public class StudentServiceImpl extends BaseService implements StudentService {
     }
 
     @Override
-    public void suspend(SuspendStudentParam suspendStudentParam) throws ErrorResponse {
+    public void suspend(SuspendStudentParam suspendStudentParam) throws Exception {
         Student student = studentRepository.findByEmail(suspendStudentParam.getStudent());
-        if(student == null) throw new ErrorResponse("Student is not registered");
+        if(student == null) throw new Exception("Student is not registered");
         student.setSuspend(true);
         studentRepository.save(student);
     }

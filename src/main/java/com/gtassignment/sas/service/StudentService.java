@@ -18,5 +18,5 @@ public interface StudentService {
 
     List<Student> getCommonStudentByTeacherEmailList(List<String> teacherEmailList);
 
-    void suspend(SuspendStudentParam suspendStudentParam) throws ErrorResponse;
+    void suspend(SuspendStudentParam suspendStudentParam) throws Exception;
 }

@@ -32,9 +32,11 @@ public class StudentController extends BaseController{
     @PostMapping(value = "/suspend")
     public ResponseEntity<Object> suspend(@Valid @RequestBody SuspendStudentParam suspendStudentParam)
             throws ErrorResponse {
-
-       studentService.suspend(suspendStudentParam);
-
+        try {
+            studentService.suspend(suspendStudentParam);
+        } catch (Exception ex) {
+            throw new ErrorResponse("Student email is not registered", HttpStatus.BAD_REQUEST);
+        }
        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 }

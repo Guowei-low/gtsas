@@ -61,9 +61,6 @@ public class TeacherController extends BaseController{
     @GetMapping(value = "/commonstudents")
     public ResponseEntity<Object> findCommonStudent(@Valid @RequestParam(name = "teacher") List<@Email String> teacherEmailList)
             throws ErrorResponse {
-        if (teacherEmailList.isEmpty()) {
-            throw new ErrorResponse("No teacher email provided", HttpStatus.BAD_REQUEST);
-        }
 
         if (teacherService.countTeacherFromEmailList(teacherEmailList) != teacherEmailList.size()) {
             throw new ErrorResponse("Some teacher's email wasn't registered", HttpStatus.BAD_REQUEST);
