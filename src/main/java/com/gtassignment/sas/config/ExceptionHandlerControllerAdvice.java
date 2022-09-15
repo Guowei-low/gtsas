@@ -43,7 +43,6 @@ public class ExceptionHandlerControllerAdvice extends ResponseEntityExceptionHan
         @Override
         protected ResponseEntity<Object> handleMethodArgumentNotValid(final MethodArgumentNotValidException ex,
                                                                       final HttpHeaders headers, final HttpStatus status, final WebRequest request) {
-                System.out.println("Validation Error Method getting executed!!!!");
                 final List<String> details = new ArrayList<>();
                 for (final ObjectError error : ex.getBindingResult().getAllErrors()) {
                         details.add(error.getDefaultMessage());

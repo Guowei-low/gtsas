@@ -25,12 +25,4 @@ public class BaseController {
                 .body(Collections
                         .singletonMap("mesaage", "Existing data found in database, data cannot be duplicated"));
     }
-
-//    @ExceptionHandler({ Exception.class })
-//    public ResponseEntity<Object> handleException(Exception err) {
-//        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-//                .body(Collections
-//                        .singletonMap("mesaage", "Unknown Error, please contact admin"));
-//    }
-
 }
