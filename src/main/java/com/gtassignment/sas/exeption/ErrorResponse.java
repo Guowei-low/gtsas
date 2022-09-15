@@ -8,5 +8,9 @@ import org.springframework.http.HttpStatus;
 @AllArgsConstructor
 public class ErrorResponse extends Exception {
     private String message;
-    private HttpStatus httpStatus;
+    private HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
+
+    public ErrorResponse(String message) {
+        this.message = message;
+    }
 }

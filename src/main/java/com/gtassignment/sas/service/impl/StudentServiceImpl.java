@@ -2,6 +2,7 @@ package com.gtassignment.sas.service.impl;
 
 import com.gtassignment.sas.dto.StudentParam;
 import com.gtassignment.sas.dto.SuspendStudentParam;
+import com.gtassignment.sas.exeption.ErrorResponse;
 import com.gtassignment.sas.model.Student;
 import com.gtassignment.sas.repository.StudentRepository;
 import com.gtassignment.sas.service.StudentService;
@@ -45,14 +46,10 @@ public class StudentServiceImpl extends BaseService implements StudentService {
     }
 
     @Override
-    public Boolean suspend(SuspendStudentParam suspendStudentParam) {
+    public void suspend(SuspendStudentParam suspendStudentParam) throws ErrorResponse {
         Student student = studentRepository.findByEmail(suspendStudentParam.getStudent());
+        if(student == null) throw new ErrorResponse("Student is not registered");
         student.setSuspend(true);
-        try {
-            studentRepository.save(student);
-        } catch (Exception e) {
-            return false;
-        }
-        return true;
+        studentRepository.save(student);
     }
 }

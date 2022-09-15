@@ -2,6 +2,7 @@ package com.gtassignment.sas.service;
 
 import com.gtassignment.sas.dto.StudentParam;
 import com.gtassignment.sas.dto.SuspendStudentParam;
+import com.gtassignment.sas.exeption.ErrorResponse;
 import com.gtassignment.sas.model.Student;
 import org.springframework.http.ResponseEntity;
 
@@ -17,5 +18,5 @@ public interface StudentService {
 
     List<Student> getCommonStudentByTeacherEmailList(List<String> teacherEmailList);
 
-    Boolean suspend(SuspendStudentParam suspendStudentParam);
+    void suspend(SuspendStudentParam suspendStudentParam) throws ErrorResponse;
 }

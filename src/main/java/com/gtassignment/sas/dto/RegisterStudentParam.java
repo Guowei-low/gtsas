@@ -5,6 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,7 +16,12 @@ import java.util.List;
 @AllArgsConstructor
 public class RegisterStudentParam {
     @JsonProperty("teacher")
+    @NotBlank(message = "Teacher email is not provided")
+    @NotNull(message = "Teacher email can not be empty")
+    @Email(message = "Email is not valid")
     private String teacherEmail;
+
     @JsonProperty("students")
-    private List<String> studentEmailList = new ArrayList<>();
+    @NotNull(message = "Student email can not be empty")
+    private List<@Email String> studentEmailList = new ArrayList<>();
 }
