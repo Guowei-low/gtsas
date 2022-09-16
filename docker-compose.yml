@@ -1,0 +1,37 @@
+version: "3.9"
+services:
+  postgresql:
+    image: "postgres:latest"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=gtAssignment
+      - POSTGRES_PASSWORD=postgres
+    networks:
+      - school-network
+    ports:
+      - "5433:5432"
+    restart: always
+  redis:
+    image: "redis:latest"
+    networks:
+      - school-network
+    ports:
+      - "6379:6379"
+  school-administration:
+    depends_on:
+      - postgresql
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    # volumes:
+    #   - "C:/Users/ECQ1013/.m2:/root/.m2"
+    ports:
+      - "65534:80"
+    networks:
+      - school-network
+    environment:
+#      spring.datasource.url: "jdbc:postgresql://postgresql:5432/schooldb?allowPublicKeyRetrieval=true&useSSL=false&createDatabaseIfNotExist=true"
+      server.port: 80
+    command: tail -F /dev/null
+networks:
+  school-network:
