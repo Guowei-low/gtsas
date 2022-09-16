@@ -2,11 +2,6 @@
 Gt Student Administrative Systems
 A system for admin to manage teacher and student.
 
-# Build guide
-## Gradle
-
-### Testing
-First check that you are able to compile and pass the tests:
 ## Maven
 
 ### Testing
